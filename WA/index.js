@@ -1,11 +1,10 @@
-const { default: makeConn, DisconnectReason, BufferJSON, useMultiFileAuthState, MessageType, MessageOptions, Mimetype } = require('@whiskeysockets/baileys');
+const { default: makeConn, DisconnectReason, BufferJSON, useMultiFileAuthState, MessageType, MessageOptions, Mimetype, fetchLatestBaileysVersion, makeInMemoryStore } = require('@whiskeysockets/baileys');
 var { Boom } = require('@hapi/boom');
 const fs = require('fs');
 
 const express = require('express');
 const app = express();
 const port = 3000;
-
 
 app.get('/', (req, res) => {
   res.send('Default response!')
@@ -19,7 +18,10 @@ var sockClient = "";
 async function connectToWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState('auth_store');
 
-  console.log(makeConn);
+  // console.log(makeConn);
+
+  const { version, isLatest } = await fetchLatestBaileysVersion();
+  console.log(`🔧 using WA v${version.join(".")}, isLatest: ${isLatest}`);
 
   sockClient = makeConn({
     printQRInTerminal: true,
@@ -40,14 +42,14 @@ async function connectToWhatsApp() {
       console.log('✨ Logged in to WhatsApp as', sockClient.user.name);
     }
   })
-  
+
   sockClient.ev.on('creds.update', saveCreds);   // called when credentials are updated
   sockClient.ev.on('messages.upsert', async (m) => {
     var message = m?.messages[0].message?.conversation;
     console.log(JSON.stringify(m, undefined, 2));
-  console.log("message is:" + message);
-  // console.log('Logged in to', m.messages[0].key.remoteJid);
-});
+    console.log("message is:" + message);
+    // console.log('Logged in to', m.messages[0].key.remoteJid);
+  });
 }
 
 connectToWhatsApp();
