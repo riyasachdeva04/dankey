@@ -8,23 +8,22 @@ const port = 3000;
 
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Default response!')
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Express app listening on port ${port}`)
 })
 
 var sockClient = "";
-
 async function connectToWhatsApp() {
-  const { state, saveCreds } = await useMultiFileAuthState('./auth_info.json');
+  const { state, saveCreds } = await useMultiFileAuthState('auth_store');
 
   console.log(makeConn);
 
   sockClient = makeConn({
     printQRInTerminal: true,
-    auth: state
+    auth: state // will use the given state to connect so if valid credentials are available -- it'll connect without QR
   });
 
   sockClient.ev.on('connection.update', (update) => {
@@ -38,32 +37,20 @@ async function connectToWhatsApp() {
       }
     } else if (connection === 'open') {
       console.log('opened connection');
-      console.log('Logged in to');
-
+      console.log('✨ Logged in to WhatsApp as', sockClient.user.name);
     }
   })
-
-  sockClient.ev.on('creds.update', saveCreds);
-
+  
+  sockClient.ev.on('creds.update', saveCreds);   // called when credentials are updated
   sockClient.ev.on('messages.upsert', async (m) => {
     var message = m?.messages[0].message?.conversation;
-    // console.log(JSON.stringify(m, undefined, 2));
-
-
-    }
-    console.log("message is:" + message);
-
-
-
-
-    // console.log('Logged in to', m.messages[0].key.remoteJid);
-  })
+    console.log(JSON.stringify(m, undefined, 2));
+  console.log("message is:" + message);
+  // console.log('Logged in to', m.messages[0].key.remoteJid);
+});
 }
 
 connectToWhatsApp();
-
-
-
 
 function getJid(phone) {
   phone += "";
