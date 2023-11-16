@@ -45,10 +45,32 @@ async function connectToWhatsApp() {
 
   sockClient.ev.on('creds.update', saveCreds);   // called when credentials are updated
   sockClient.ev.on('messages.upsert', async (m) => {
+    var messageObj = m?.messages[0];
     var message = m?.messages[0].message?.conversation;
     console.log(JSON.stringify(m, undefined, 2));
     console.log("message is:" + message);
     // console.log('Logged in to', m.messages[0].key.remoteJid);
+
+    // Check if the message is a command
+    if (message && message.startsWith('/dankey')) {
+      // add contextual analysis here -- integrate with model
+
+      // For now, just sending a predefined meme
+      const memePath = './media/shutup.jpg'; // Path to your meme image
+      try {
+        const imageMessage = {
+            image: { url: memePath },
+            caption: "Here's your meme!" // Optional caption for the image
+        };
+        await sockClient.sendMessage(
+            messageObj.key.remoteJid, 
+            imageMessage
+        );
+        console.log('Sent meme!');
+      } catch (error) {
+        console.error('Failed to send meme:', error);
+      }
+    }
   });
 }
 
