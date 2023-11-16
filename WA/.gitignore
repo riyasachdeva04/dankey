@@ -1,2 +1,5 @@
 node_modules/
+
+# different for each user/login
 auth_store/
+message_store/
