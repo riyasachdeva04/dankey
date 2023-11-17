@@ -26,7 +26,8 @@ Mainly, time constraints due to unfamiliarity with node.
 ## What we learned
 
 We learnt efficient data analysis, nlp and integration.
-What's next for Dankey
+
+## What's next for Dankey
 
 Using it over other social media platforms.
 
