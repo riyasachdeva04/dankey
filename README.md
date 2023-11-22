@@ -20,7 +20,8 @@ This collaborative tech stack, combining Baileys, Node.js, Express.js, and Pytho
 Mainly, time constraints due to unfamiliarity with node.
 
 ## Accomplishments that we're proud of
-- Integrating it with whatsapp
+
+- Integrating it with WhatsApp
 - Generating semantically meaningful and funny memes
 
 ## What we learned
