@@ -1,5 +1,7 @@
 # dankey
 
+ ⚠️ Disclaimer: There is no guarentee that the memes are funny.
+
 ## Inspiration
 
 Our inspiration for Dankey came from the desire to inject humor and creativity into everyday conversations. We recognized the power of memes to convey messages in a lighthearted and engaging manner.
