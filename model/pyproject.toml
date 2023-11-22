@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "dankey"
+version = "0.0.69"
+description = "The WhatsApp Meme Bot"
+authors = ["UPSAtwal, riyasachdeva04"]
+license = "GPLv3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.6"
+sentence-transformers = "^2.2.2"
+pandas = "^2.1.3"
+spacy = "^3.7.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
