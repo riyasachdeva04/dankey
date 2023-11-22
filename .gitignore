@@ -1,2 +1,5 @@
 # use your own venv lol
 .venv/
+
+# no vscode env files
+.vscode/
