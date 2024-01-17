@@ -1,6 +1,10 @@
 const { default: makeConn, DisconnectReason, BufferJSON, useMultiFileAuthState, MessageType, MessageOptions, Mimetype, fetchLatestBaileysVersion, makeInMemoryStore } = require('@whiskeysockets/baileys');
 var { Boom } = require('@hapi/boom');
 const fs = require('fs');
+const axios = require('axios');
+const { spawn } = require('child_process');
+
+const modelPath = '../model/dankey.py';
 
 const express = require('express');
 const app = express();
@@ -46,18 +50,36 @@ async function connectToWhatsApp() {
   sockClient.ev.on('creds.update', saveCreds);   // called when credentials are updated
   sockClient.ev.on('messages.upsert', async (m) => {
     var messageObj = m?.messages[0];
-    var message = m?.messages[0].message?.conversation;
+    var extendedTextMessage = messageObj?.message?.extendedTextMessage;
+    var fullMessage = extendedTextMessage?.text;
     console.log(JSON.stringify(m, undefined, 2));
-    console.log("message is:" + message);
+    console.log("message is:" + fullMessage);
     // console.log('Logged in to', m.messages[0].key.remoteJid);
 
     // Check if the message is a command
-    if (message && message.startsWith('/dankey')) {
-      // add contextual analysis here -- integrate with model
-      var memeImageFromModel
-      // For now, just sending a predefined meme
-      const memePath = './media/shutup.jpg'; // Path to your meme image
+    if (fullMessage && fullMessage.startsWith('/dankey')) {
       try {
+        // mark that message as recieved 
+        const reactionMessage = {
+          react: {
+            text: "💖", // use an empty string to remove the reaction
+            key: messageObj.key,
+          },
+        };
+
+        // Extract the text after '/dankey '
+        const commandText = fullMessage.split('/dankey ')[1];
+        console.log("Extracted text: " + commandText);
+
+        // Run Python script and wait for the meme link
+        const memeLinkFromModel = await runPythonScript(commandText);
+        console.log('Image link:', memeLinkFromModel);
+
+        // For now, overwrite the image and send it everytime
+        // Download the image and wait for it to be saved
+        const memePath = './media/downloaded_meme.jpg'; // Path to meme image
+        await downloadImage(memeLinkFromModel, memePath);
+
         const imageMessage = {
           image: { url: memePath },
           caption: "Here's your meme!" // Optional caption for the image
@@ -69,6 +91,7 @@ async function connectToWhatsApp() {
         console.log('Sent meme!');
       } catch (error) {
         console.error('Failed to send meme:', error);
+        await sockClient.sendMessage(messageObj.key.remoteJid, { text: "Error while sending meme: " + error });
       }
     }
   });
@@ -88,4 +111,53 @@ function getJid(phone) {
   }
 
   return phone;
+}
+
+// function to run the python script & pass it the input text as an arg
+function runPythonScript(inputText) {
+  return new Promise((resolve, reject) => {
+    const pythonProcess = spawn('python', [modelPath, inputText]);
+    let output = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      console.log("Received data chunk:", data.toString());
+      output += data.toString();
+    });
+
+    pythonProcess.on('close', () => {
+      // Split the output by newlines and get the last non-empty line
+      const lines = output.split('\n').filter(line => line.trim() !== '');
+      const lastLine = lines[lines.length - 1];
+      resolve(lastLine);
+      console.log('Model Output is:', lastLine);
+    });
+    pythonProcess.stderr.on('data', (data) => {
+      console.error("Error from Python script:", data.toString());
+      reject(data.toString());
+    });
+  });
+}
+
+// function to download the image using axios and save it
+// !! CAN BE ABUSED
+// this function returns a Promise
+function downloadImage(url, filepath) {
+  return new Promise((resolve, reject) => {
+    if (!url) {
+      console.error('Invalid URL provided for download');
+      return reject('Invalid URL');
+    }
+
+    axios({
+      url,
+      responseType: 'stream',
+    }).then(response => {
+      response.data.pipe(fs.createWriteStream(filepath))
+      .on('finish', resolve)
+      .on('error', reject);
+    }).catch(error => {
+      console.error('Error downloading the image:', error);
+      reject(error);
+    });
+  });
 }
