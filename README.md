@@ -43,5 +43,6 @@ Using it over other social media platforms.
 - pandas
 - python
 - yarn
+- axios
 
 Try it out!
