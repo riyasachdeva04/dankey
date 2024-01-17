@@ -4,14 +4,14 @@ import sys
 
 text = sys.argv[1] # meme context here, aka pass the text from the chat as an argument to this script, first arg is the script name itself
 
-df = pd.read_csv('./model/memegenerator.csv') # set path according to index.js
+df = pd.read_csv('../model/memegenerator.csv') # set path according to index.js
 # df.head()
 
 df = df.drop(['Meme ID', 'Archived URL', 'MD5 Hash', 'File Size (In Bytes)'], axis=1)
 # df.head()
 
 custom_headers = ['file_name', 'link', 'text', 'text2', 'sentiment', 'sarcasm', 'offensive', 'motivational', 'positive/negative']
-df2 = pd.read_excel('./model/data_7000_actual.xlsx', header=None, names=custom_headers) # set path according to index.js
+df2 = pd.read_excel('../model/data_7000_actual.xlsx', header=None, names=custom_headers) # set path according to index.js
 
 # df2.head()
 
