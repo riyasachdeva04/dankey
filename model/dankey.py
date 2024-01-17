@@ -1,5 +1,8 @@
 from sentence_transformers import SentenceTransformer, util
 import pandas as pd
+import sys
+
+text = sys.argv[1] # meme context here, aka pass the text from the chat as an argument to this script, first arg is the script name itself
 
 df = pd.read_csv('memegenerator.csv')
 # df.head()
@@ -18,53 +21,52 @@ df2['text']=df2['text'].str.lower()
 # df2.head()
 # df2.info()
 
-text = "you idiot"
 # df.info()
 
 df['Alternate Text'] = df['Alternate Text'].apply(lambda x: str(x) if x is not None else "")
 
 #dataset 1
 
-def get_meme1(text):
+# def get_meme1(text):
 
-    # Load the Universal Sentence Encoder
-    model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+#     # Load the Universal Sentence Encoder
+#     model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
-    # Encode messages and meme texts
-    message_embedding = model.encode(text)
-    meme_embeddings = model.encode(df['Alternate Text'].astype(str).tolist())
+#     # Encode messages and meme texts
+#     message_embedding = model.encode(text)
+#     meme_embeddings = model.encode(df['Alternate Text'].astype(str).tolist())
 
-    # Calculate cosine similarity
-    similarities = util.pytorch_cos_sim(message_embedding, meme_embeddings)[0]
+#     # Calculate cosine similarity
+#     similarities = util.pytorch_cos_sim(message_embedding, meme_embeddings)[0]
 
-    # Find the index of the most similar meme
-    most_similar_index = similarities.argmax().item()
+#     # Find the index of the most similar meme
+#     most_similar_index = similarities.argmax().item()
 
-    # Get the most similar meme text
-    most_similar_meme = df['Alternate Text'][most_similar_index]
+#     # Get the most similar meme text
+#     most_similar_meme = df['Alternate Text'][most_similar_index]
 
-    print("Most similar meme:", most_similar_meme)
+#     print("Most similar meme:", most_similar_meme)
 
-    return most_similar_index
+#     return most_similar_index
 
-indx = get_meme1(text)
-link = df['Meme Page URL'][indx]
+# indx = get_meme1(text)
+# link = df['Meme Page URL'][indx]
 
-print(link)
+# print(link)
 
-def modify_url(link):
-    if link.startswith("http://webarchive"):
-        index = link.find("http", len("http://webarchive"))
+# def modify_url(link):
+    # if link.startswith("http://webarchive"):
+        # index = link.find("http", len("http://webarchive"))
 
-        if index != -1:
-            new_link = link[index:]
-            return new_link
-    return link
+        # if index != -1:
+            # new_link = link[index:]
+            # return new_link
+    # return link
 
 
-link1 = modify_url(link)
+# link1 = modify_url(link)
 
-print(link)
+# print(link)
 
 # df2.head()
 
@@ -107,7 +109,7 @@ link2 = df2['link'][indx2]
 
 print(link2)
 
-import random
-final_link = random.choice([link1, link2])
+# import random
+# final_link = random.choice([link1, link2])
 
-print(final_link)
+# print(final_link)

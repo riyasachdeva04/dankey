@@ -54,17 +54,17 @@ async function connectToWhatsApp() {
     // Check if the message is a command
     if (message && message.startsWith('/dankey')) {
       // add contextual analysis here -- integrate with model
-
+      var memeImageFromModel
       // For now, just sending a predefined meme
       const memePath = './media/shutup.jpg'; // Path to your meme image
       try {
         const imageMessage = {
-            image: { url: memePath },
-            caption: "Here's your meme!" // Optional caption for the image
+          image: { url: memePath },
+          caption: "Here's your meme!" // Optional caption for the image
         };
         await sockClient.sendMessage(
-            messageObj.key.remoteJid, 
-            imageMessage
+          messageObj.key.remoteJid,
+          imageMessage
         );
         console.log('Sent meme!');
       } catch (error) {
