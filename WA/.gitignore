@@ -6,3 +6,6 @@ message_store/
 
 # fu macos
 .DS_Store
+
+# downloaded_meme file is changed everytime
+WA/media/downloaded_meme.jpg
