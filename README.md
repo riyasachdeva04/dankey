@@ -1,5 +1,7 @@
 # dankey
 
+ ⚠️ Disclaimer: There is no guarentee that the memes are funny.
+
 ## Inspiration
 
 Our inspiration for Dankey came from the desire to inject humor and creativity into everyday conversations. We recognized the power of memes to convey messages in a lighthearted and engaging manner.
@@ -20,7 +22,8 @@ This collaborative tech stack, combining Baileys, Node.js, Express.js, and Pytho
 Mainly, time constraints due to unfamiliarity with node.
 
 ## Accomplishments that we're proud of
-- Integrating it with whatsapp
+
+- Integrating it with WhatsApp
 - Generating semantically meaningful and funny memes
 
 ## What we learned
@@ -40,5 +43,6 @@ Using it over other social media platforms.
 - pandas
 - python
 - yarn
+- axios
 
 Try it out!

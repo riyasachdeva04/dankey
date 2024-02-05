@@ -3,3 +3,9 @@ node_modules/
 # different for each user/login
 auth_store/
 message_store/
+
+# fu macos
+.DS_Store
+
+# downloaded_meme file is changed everytime
+WA/media/downloaded_meme.jpg
